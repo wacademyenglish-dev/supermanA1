@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>WOLFLIX Masterclass: Origin Story (A1+)</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@300;400;700;900&family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        sl: {
+                            farm: '#d97706',
+                            sky: '#0284c7',
+                            red: '#dc2626',
+                            yellow: '#facc15',
+                            panel: '#ffffff',
+                            text: '#1e293b'
+                        }
+                    },
+                    fontFamily: {
+                        hero: ['"Bebas Neue"', 'sans-serif'],
+                        base: ['Montserrat', 'sans-serif'],
+                        ui: ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        :root {
+            /* SMALLVILLE THEME (Warm, Farm, Memories) */
+            --bg-top: #fef3c7;
+            --bg-bot: #fde68a;
+            --panel-bg: rgba(255, 255, 255, 0.9);
+            --text-main: #451a03;
+            --text-muted: #78350f;
+            --accent: #d97706; /* Amber */
+            --accent-glow: rgba(217, 119, 6, 0.3);
+            --secondary: #0284c7; /* Sky Blue */
+            --border-color: #fcd34d;
+            --btn-text: #ffffff;
+            --font-head: 'Bebas Neue', sans-serif;
+            --btn-radius: 8px;
+            --shadow: 0 10px 30px rgba(217, 119, 6, 0.15);
+        }
+
+        body.theme-metropolis {
+            /* METROPOLIS THEME (Epic, Blue, Red, Yellow) */
+            --bg-top: #0f172a;
+            --bg-bot: #002855;
+            --panel-bg: rgba(15, 23, 42, 0.85);
+            --text-main: #f8fafc;
+            --text-muted: #cbd5e1;
+            --accent: #dc2626; /* Superman Red */
+            --accent-glow: rgba(220, 38, 38, 0.5);
+            --secondary: #facc15; /* Superman Yellow */
+            --border-color: #1e3a8a;
+            --btn-text: #ffffff;
+            --shadow: 0 0 25px rgba(220, 38, 38, 0.2);
+        }
+
+        body {
+            background-image: linear-gradient(135deg, var(--bg-top) 0%, var(--bg-bot) 100%);
+            color: var(--text-main);
+            font-family: 'Montserrat', sans-serif;
+            transition: all 0.8s ease-in-out;
+            overflow: hidden;
+            margin: 0;
+            min-height: 100vh;
+        }
+
+        /* --- Global Structural CSS --- */
+        .slide { display: none; opacity: 0; width: 100%; min-height: 100%; flex-direction: column; padding: 1.5rem; position: relative; z-index: 10; }
+        .slide.active { display: flex; animation: cinematicFade 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        .slide.active::before, .slide.active::after { content: ''; margin: auto; }
+        
+        .page-content { margin: 0 auto; width: 100%; max-width: 1000px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; flex-shrink: 0; padding: 2rem 0; }
+
+        @keyframes cinematicFade { from { opacity: 0; transform: scale(0.98); filter: blur(3px); } to { opacity: 1; transform: scale(1); filter: blur(0); } }
+
+        /* --- Components --- */
+        .theme-panel { background-color: var(--panel-bg); backdrop-filter: blur(10px); border: 1px solid var(--border-color); box-shadow: var(--shadow); border-radius: 1rem; transition: all 0.4s ease; }
+        body.theme-metropolis .theme-panel { border-radius: 4px; border-left: 4px solid var(--accent); }
+        
+        .interactive-card { cursor: pointer; transition: all 0.3s; }
+        .interactive-card:hover { transform: translateY(-4px); border-color: var(--accent); box-shadow: 0 10px 25px var(--accent-glow); }
+        .reveal-content { max-height: 0; opacity: 0; overflow: hidden; transition: all 0.5s ease; }
+        .interactive-card.open .reveal-content { max-height: 500px; opacity: 1; margin-top: 1rem; padding-top: 1rem; border-top: 1px dashed var(--border-color); }
+
+        h1, h2, h3 { font-family: var(--font-head); letter-spacing: 2px; }
+        
+        /* --- Buttons --- */
+        .theme-btn { background-color: var(--accent); color: var(--btn-text); font-family: var(--font-head); font-weight: 400; text-transform: uppercase; letter-spacing: 0.1em; border-radius: var(--btn-radius); transition: all 0.3s; box-shadow: var(--shadow); border: 2px solid transparent; cursor: pointer; font-size: 1.5rem; }
+        .theme-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 25px var(--accent-glow); filter: brightness(1.1); }
+        
+        .btn-outline { background-color: transparent; border: 1px solid var(--border-color); color: var(--text-muted); transition: all 0.2s; border-radius: 4px; font-family: 'Inter', sans-serif; font-weight: bold; }
+        .btn-outline:hover { border-color: var(--accent); color: var(--accent); background-color: var(--accent-glow); }
+
+        /* Match Game */
+        .match-btn { width: 100%; padding: 1.25rem; text-align: left; border: 2px solid var(--border-color); border-radius: 0.5rem; background: var(--panel-bg); cursor: pointer; transition: all 0.2s; font-family: 'Montserrat', sans-serif; font-weight: 700; color: var(--text-main); }
+        .match-btn:hover:not(.matched) { border-color: var(--accent); background: var(--accent-glow); }
+        .match-btn.selected { border-color: var(--accent); background: var(--accent); color: white; box-shadow: 0 0 15px var(--accent-glow); transform: scale(1.02); }
+        .match-btn.matched { border-color: #10b981; background: rgba(16, 185, 129, 0.1); color: #10b981; pointer-events: none; }
+        
+        @keyframes shakeError { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); border-color: red; } 50% { transform: translateX(5px); border-color: red; } 75% { transform: translateX(-5px); border-color: red; } }
+        .error-shake { animation: shakeError 0.4s ease; }
+
+        /* Sonic Boom Transition */
+        #boom-layer { position: fixed; inset: 0; background: #0284c7; z-index: 9999; display: none; opacity: 0; pointer-events: none; mix-blend-mode: screen; }
+        .boom-active { display: block !important; animation: sonicBoom 1.5s forwards; }
+        @keyframes sonicBoom { 0% { opacity: 0; transform: scale(1); } 30% { opacity: 1; transform: scale(1.5); background: #dc2626; } 100% { opacity: 0; transform: scale(2); background: #000; } }
+
+        /* Praise Toast */
+        .toast-anim { animation: toastUp 2.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        @keyframes toastUp { 0% { transform: translate(-50%, 20px) scale(0.8); opacity: 0; } 10% { transform: translate(-50%, 0) scale(1.1); opacity: 1; } 90% { transform: translate(-50%, 0) scale(1); opacity: 1; } 100% { transform: translate(-50%, -20px) scale(0.8); opacity: 0; } }
+
+        /* Heat Vision */
+        .heat-target { cursor: pointer; transition: all 0.2s; border-bottom: 2px dashed var(--accent); }
+        .heat-target:hover { color: var(--accent); text-shadow: 0 0 10px var(--accent-glow); }
+        .heat-resolved { color: #10b981; font-weight: bold; border:none; text-shadow: 0 0 10px rgba(16,185,129,0.5); pointer-events: none; }
+
+        /* Phantom Zone */
+        .phantom-gate { border: 4px dashed var(--border-color); border-radius: 12px; min-height: 120px; display: flex; align-items: center; justify-content: center; font-size: 2rem; font-family: var(--font-head); transition: all 0.3s; }
+        .phantom-gate.active { border-style: solid; border-color: var(--accent); background: var(--accent-glow); transform: scale(1.05); }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
+    </style>
+</head>
+<body class="flex flex-col h-screen w-screen overflow-hidden selection:bg-[var(--accent)] selection:text-[var(--btn-text)]">
+
+    <div id="boom-layer"></div>
+
+    <div id="praise-popup" class="fixed top-[15%] left-1/2 hidden z-[10000] pointer-events-none transform -translate-x-1/2">
+        <div class="theme-panel px-8 py-4 flex items-center gap-4 bg-[var(--panel-bg)] shadow-2xl border-2 border-[var(--accent)]">
+            <span id="praise-icon" class="text-3xl">🛡️</span>
+            <span id="praise-text" class="text-[var(--accent)] font-black text-2xl uppercase tracking-widest font-head"></span>
+        </div>
+    </div>
+
+    <!-- HEADER -->
+    <header class="h-16 shrink-0 bg-[var(--panel-bg)]/80 backdrop-blur-xl border-b border-[var(--border-color)] z-40 flex items-center justify-between px-4 md:px-8 shadow-sm relative transition-all duration-500">
+        <div class="flex items-center gap-3">
+            <span class="text-2xl drop-shadow-sm transition-opacity" id="header-icon">🌾</span>
+            <h1 class="font-head tracking-widest text-2xl uppercase mt-1 text-[var(--accent)] hidden md:block" id="header-title">Smallville Memories</h1>
+            <span class="bg-[var(--accent-glow)] text-[var(--accent)] border border-[var(--accent)] font-bold text-[10px] px-3 py-1 rounded tracking-widest uppercase">CEFR: A1+</span>
+        </div>
+        <div class="flex items-center gap-3 md:gap-5">
+            <div class="flex items-center gap-2 border border-[var(--border-color)] rounded px-3 py-1 shadow-sm hidden md:flex">
+                <span class="text-[10px] text-[var(--text-muted)] font-bold mr-1 uppercase tracking-widest font-ui">Praise:</span>
+                <button onclick="triggerPraise('SUPER!', '🦸‍♂️')" class="text-lg hover:scale-125 transition-transform">🦸‍♂️</button>
+                <button onclick="triggerPraise('PERFECT!', '🧠')" class="text-lg hover:scale-125 transition-transform">🧠</button>
+                <button onclick="triggerPraise('HEROIC!', '🛡️')" class="text-lg hover:scale-125 transition-transform">🛡️</button>
+            </div>
+            <button onclick="toggleFullscreen()" class="btn-outline px-3 py-1.5 text-[10px] uppercase tracking-widest hidden sm:block">FULLSCREEN</button>
+        </div>
+    </header>
+
+    <main class="flex-1 overflow-y-auto w-full relative z-10 scroll-smooth">
+        <div class="w-full h-full relative" id="slides-container">
+            
+            <!-- ============================================== -->
+            <!-- ACT I: SMALLVILLE MEMORIES (A1+ Was/Were)      -->
+            <!-- ============================================== -->
+
+            <!-- PÁGINA 1: COVER -->
+            <section class="slide active p-4 md:p-8">
+                <div class="page-content">
+                    <div class="w-full max-w-[200px] md:max-w-[280px] theme-panel p-2 mb-6 shadow-2xl relative border-[var(--border-color)] mx-auto flex justify-center bg-white transform -rotate-2 hover:rotate-0 transition-transform">
+                        <img src="https://upload.wikimedia.org/wikipedia/pt/b/bc/Superman%26Lois.jpg" alt="Superman Cover" class="w-full h-auto object-cover opacity-90 rounded">
+                    </div>
+                    <span class="text-[10px] md:text-xs font-bold tracking-[0.2em] uppercase text-[var(--accent)] mb-4 border border-[var(--accent)] px-4 py-1.5 rounded-full font-ui">WOLFLIX Masterclass</span>
+                    <h1 class="text-6xl md:text-8xl font-black uppercase tracking-tighter mb-4 text-[var(--accent)] font-head drop-shadow-sm">SUPERMAN & LOIS</h1>
+                    <h2 class="text-xl md:text-2xl font-bold text-[var(--text-muted)] mb-10 uppercase tracking-widest font-ui">The Origin Story</h2>
+                    <button onclick="nextSlide()" class="theme-btn px-10 py-3 text-xl">Start Lesson</button>
+                </div>
+            </section>
+
+            <!-- PÁGINA 2: BRIEFING -->
+            <section class="slide p-4 md:p-8">
+                <div class="page-content">
+                    <h2 class="font-bold font-ui tracking-widest mb-2 uppercase text-xs text-[var(--secondary)]">Directive 01</h2>
+                    <h1 class="text-4xl md:text-6xl font-black font-head uppercase tracking-tighter mb-10 text-[var(--accent)]">Teacher Briefing</h1>
+                    
+                    <div class="theme-panel p-10 max-w-4xl w-full text-lg leading-relaxed text-left mx-auto">
+                        <p class="mb-6 font-bold text-2xl border-b border-[var(--border-color)] pb-4 text-[var(--text-main)]">This is an A1+ (High Beginner) Class.</p>
+                        <p class="mb-8 text-[var(--text-muted)] font-medium">Today we watch the opening scene of the new series. We will learn how to describe people and places in the past.</p>
+                        
+                        <div class="bg-[var(--bg-top)] p-6 rounded-xl border border-[var(--border-color)]">
+                            <h3 class="font-black font-head uppercase text-xl mb-4 text-[var(--accent)] tracking-widest">Grammar Target:</h3>
+                            <p class="flex items-center gap-3 font-bold text-[var(--text-main)] text-xl"><span class="text-3xl text-[var(--secondary)]">⏳</span> The Verb "To Be" (Past)</p>
+                            <p class="ml-10 text-[var(--text-muted)] mt-2">Was / Were / Wasn't / Weren't.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- PÁGINA 3: WARM UP 1 -->
+            <section class="slide p-4 md:p-8">
+                <div class="page-content">
+                    <h2 class="font-bold font-ui tracking-widest mb-2 uppercase text-xs text-[var(--secondary)]">Warm-Up</h2>
+                    <h1 class="text-4xl md:text-6xl font-black font-head uppercase tracking-tighter mb-10 text-[var(--accent)]">Where are you from?</h1>
+                    
+                    <div class="theme-panel p-12 max-w-4xl w-full text-center mx-auto">
+                        <span class="text-7xl mb-8 block">🏡 🏙️</span>
+                        <p class="text-2xl md:text-3xl font-bold mb-8 leading-relaxed">
+                            "Superman is from a small farm in Smallville. Are you from a big city or a small town?"
+                        </p>
+                        <div class="bg-[var(--bg-top)] border border-[var(--border-color)] rounded-lg p-6 mx-auto max-w-xl text-left">
+                            <p class="font-bold text-[var(--accent)] font-ui text-sm mb-1 tracking-widest uppercase">🗣️ Prompt:</p>
+                            <p class="italic text-lg text-[var(--text-muted)] font-bold">"I am from a [ big city / small town ]. It is..."</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- PÁGINA 4: WARM UP 2 -->
+            <section class="slide p-4 md:p-8">
+                <div class="page-content">
+                    <h2 class="font-bold font-ui tracking-widest mb-2 uppercase text-xs text-[var(--secondary)]">Warm-Up</h2>
+                    <h1 class="text-4xl md:text-6xl font-black font-head uppercase tracking-tighter mb-10 text-[var(--accent)]">When you were young</h1>
+                    
+                    <div class="theme-panel p-12 max-w-4xl w-full text-center mx-auto border-t-4 border-[var(--accent)]">
+                        <span class="text-7xl mb-8 block">👶</span>
+                        <p class="text-2xl md:text-3xl font-bold mb-8 leading-relaxed">
+                            "When Clark was a baby, he was very quiet. What about you? When you were a baby, were you quiet or noisy?"
+                        </p>
+                        <div class="bg-[var(--bg-top)] border border-[var(--border-color)] rounded-lg p-6 mx-auto max-w-xl text-left">
+                            <p class="font-bold text-[var(--accent)] font-ui text-sm mb-1 tracking-widest uppercase">🗣️ Prompt:</p>
+                            <p class="italic text-lg text-[var(--text-muted)] font-bold">"When I was a baby, I was very [ quiet / noisy / happy ]."</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- PÁGINA 5: THE SYNOPSIS -->
+            <section class="slide p-4 md:p-8">
+                <div class="page-content">
+                    <h2 class="font-bold font-ui tracking-widest mb-2 uppercase text-xs text-[var(--secondary)]">The Plot</h2>
+                    <h1 class="text-4xl md:text-6xl font-black font-head uppercase tracking-tighter mb-8 text-[var(--accent)]">The Alien Boy</h1>
+                    
+                    <div class="theme-panel p-10 max-w-4xl w-full text-left mx-auto">
+                        <p class="text-xl font-medium text-[var(--text-main)] leading-relaxed mb-6">
+                            Clark Kent is an alien. He is from the planet Krypton. But his family is from Earth. 
+                        </p>
+                        <p class="text-xl font-medium text-[var(--text-main)] leading-relaxed mb-6">
+                            He lives in the city of Metropolis with his wife, Lois Lane, and their two sons. He is a journalist, but he is also a superhero.
+                        </p>
+                        
+                        <div class="bg-[var(--bg-top)] border-l-4 border-l-[var(--secondary)] p-4 mt-6">
+                            <p class="font-bold text-[var(--text-muted)] uppercase tracking-widest text-sm font-ui">In this video:</p>
+                            <p class="text-[var(--text-main)] font-bold">We will see pictures of his life in the past.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- PÁGINA 6: LEXICON MATCH 1 -->
+            <section class="slide p-4 md:p-8">
+                <div class="page-content">
+                    <h2 class="font-bold font-ui tracking-widest mb-2 uppercase text-xs text-[var(--secondary)]">Active Vocabulary</h2>
+                    <h1 class="text-4xl md:text-5xl font-black font-head uppercase tracking-tighter mb-4 text-[var(--accent)]">Visual Matrix I</h1>
+                    <p class="text-lg text-[var(--text-muted)] mb-8 font-medium">Click a word, then click the correct definition.</p>
+
+                    <div class="flex flex-col md:flex-row gap-6 w-full max-w-5xl mx-auto items-stretch">
+                        <div class="flex-1 space-y-4" id="lex-words-1">
+                            <button class="match-btn word-btn-1" data-match="1" onclick="selectMatch(this, 'word', 1)">Spaceship</button>
+                            <button class="match-btn word-btn-1" data-match="2" onclick="selectMatch(this, 'word', 1)">Farm</button>
+                            <button class="match-btn word-btn-1" data-match="3" onclick="selectMatch(this, 'word', 1)">Alien</button>
+                            <button class="match-btn word-btn-1" data-match="4" onclick="selectMatch(this, 'word', 1)">Twins</button>
+                        </div>
+                        <div class="flex-1 space-y-4" id="lex-defs-1">
+                            <button class="match-btn def-btn-1 text-sm" data-match="3" onclick="selectMatch(this, 'def', 1)">A person from another planet.</button>
+                            <button class="match-btn def-btn-1 text-sm" data-match="1" onclick="selectMatch(this, 'def', 1)">A flying vehicle from space.</button>
+                            <button class="match-btn def-btn-1 text-sm" data-match="4" onclick="selectMatch(this, 'def', 1)">Two brothers or sisters born on the same day.</button>
+                            <button class="match-btn def-btn-1 text-sm" data-match="2" onclick="selectMatch(this, 'def', 1)">A place with cows, horses, and tractors.</button>
+                        </div>
+                    </div>
+                    
+                    <div id="followup-1" class="hidden w-full max-w-5xl mt-8 theme-panel p-6 border-l-4 border-l-[var(--secondary)] bg-[var(--bg-top)] animate-pulse">
+                        <p class="font-bold text-[var(--accent)] font-ui text-sm mb-2 tracking-widest uppercase">🗣️ Follow-up (Talk to your teacher):</p>
+                        <p class="text-lg font-bold text-[var(--text-main)]">Do you believe in <span class="underline">aliens</span>?</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- PÁGINA 7: LEXICON MATCH 2 -->
+            <section class="slide p-4 md:p-8">
+                <div class="page-content">
+                    <h2 class="font-bold font-ui tracking-widest mb-2 uppercase text-xs text-[var(--secondary)]">Active Vocabulary</h2>
+                    <h1 class="text-4xl md:text-5xl font-black font-head uppercase tracking-tighter mb-4 text-[var(--accent)]">Visual Matrix II</h1>
+                    <p class="text-lg text-[var(--text-muted)] mb-8 font-medium">More important words for the video.</p>
+
+                    <div class="flex flex-col md:flex-row gap-6 w-full max-w-5xl mx-auto items-stretch">
+                        <div class="flex-1 space-y-4" id="lex-words-2">
+                            <button class="match-btn word-btn-2" data-match="1" onclick="selectMatch(this, 'word', 2)">Costume</button>
+                            <button class="match-btn word-btn-2" data-match="2" onclick="selectMatch(this, 'word', 2)">Journalist</button>
+                            <button class="match-btn word-btn-2" data-match="3" onclick="selectMatch(this, 'word', 2)">Glasses</button>
+                            <button class="match-btn word-btn-2" data-match="4" onclick="selectMatch(this, 'word', 2)">Hero</button>
+                        </div>
+                        <div class="flex-1 space-y-4" id="lex-defs-2">
+                            <button class="match-btn def-btn-2 text-sm" data-match="2" onclick="selectMatch(this, 'def', 2)">A person who writes news for a newspaper.</button>
+                            <button class="match-btn def-btn-2 text-sm" data-match="4" onclick="selectMatch(this, 'def', 2)">A strong person who saves people.</button>
+                            <button class="match-btn def-btn-2 text-sm" data-match="1" onclick="selectMatch(this, 'def', 2)">Special clothes for a superhero.</button>
+                            <button class="match-btn def-btn-2 text-sm" data-match="3" onclick="selectMatch(this, 'def', 2)">You put these on your eyes to see better.</button>
+                        </div>
+                    </div>
+                    
+                    <div id="followup-2" class="hidden w-full max-w-5xl mt-8 theme-panel p-6 border-l-4 border-l-[var(--secondary)] bg-[var(--bg-top)] animate-pulse">
+                        <p class="font-bold text-[var(--accent)] font-ui text-sm mb-2 tracking-widest uppercase">🗣️ Follow-up (Talk to your teacher):</p>
+                        <p class="text-lg font-bold text-[var(--text-main)]">Who is your favorite super<span class="underline">hero</span>?</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- PÁGINA 8: THE SONIC BOOM (TRANSITION) -->
+            <section class="slide p-4 md:p-8">
+                <div class="page-content">
+                    <div class="w-full max-w-4xl mx-auto flex flex-col items-center justify-center text-center h-full">
+                        <h2 class="font-ui font-bold tracking-widest mb-4 uppercase text-sm text-[var(--accent)] animate-pulse">It is time</h2>
+                        <h1 class="text-5xl md:text-7xl font-head font-black uppercase tracking-tighter mb-10 text-[var(--text-main)]">Look up in the sky</h1>
+                        
+                        <p class="text-2xl font-bold mb-16 opacity-90 max-w-2xl text-[var(--text-muted)]">
+                            "Let's see the world's greatest hero."
+                        </p>
+                        
+                        <button onclick="triggerSonicBoom()" class="theme-btn px-12 py-6 text-2xl w-full max-w-md shadow-xl bg-[var(--accent)] text-white" id="boom-btn">
+                            TAKE FLIGHT 🚀
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============================================== -->
+            <!-- THEME SHIFTS TO METROPOLIS MODE HERE           -->
+            <!-- ============================================== -->
+
+            <!-- PÁGINA 9: THE SCREENING ROOM -->
+            <section class="slide p-4 md:p-8 h-full">
+                <div class="page-content h-full w-full max-w-6xl mx-auto">
+                    <h2 class="font-ui font-bold tracking-widest mb-2 uppercase text-xs text-[var(--secondary)] text-center">Video Evidence</h2>
+                    <h1 class="text-4xl md:text-6xl font-head font-black uppercase tracking-tighter mb-8 text-white text-center">The Opening Scene</h1>
+                    
+                    <div class="w-full aspect-video rounded-xl overflow-hidden border-2 border-[var(--secondary)] bg-black shadow-[0_0_40px_rgba(220,38,38,0.4)] relative shrink-0">
+                        <iframe class="absolute inset-0 w-full h-full" src="https://www.youtube.com/embed/IzdkVRZV4vc?start=1&rel=0" frameborder="0" allowfullscreen></iframe>
+                    </div>
+                </div>
+            </section>
+
+            <!-- PÁGINA 10: COMPREHENSION CHECK -->
+            <section class="slide p-4 md:p-8">
+                <div class="page-content">
+                    <h2 class="font-ui font-bold tracking-widest mb-2 uppercase text-xs text-[var(--secondary)] text-center">Observation</h2>
+                    <h1 class="text-4xl md:text-6xl font-head font-black uppercase tracking-tighter mb-10 text-white text-center">Comprehension</h1>
+                    
+                    <div class="space-y-6 max-w-4xl mx-auto w-full">
+                        <div class="theme-panel p-8 interactive-card text-left" onclick="this.classList.toggle('open')">
+                            <p class="font-bold text-xl md:text-2xl text-white">Q: What is the name of his planet?</p>
+                            <div class="reveal-content text-[var(--secondary)] font-bold text-lg mt-4 border-t border-[var(--border-color)] pt-4 font-ui uppercase tracking-widest">
+                                > Krypton.
+                            </div>
+                        </div>
+                        <div class="theme-panel p-8 interactive-card text-left" onclick="this.classList.toggle('open')">
+                            <p class="font-bold text-xl md:text-2xl text-white">Q: How many sons does he have?</p>
+                            <div class="reveal-content text-[var(--accent)] font-bold text-lg mt-4 border-t border-[var(--border-color)] pt-4 font-ui uppercase tracking-widest">
+                                > Two sons (Twins).
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============================================== -->
+            <!-- ACT II: VERB TO BE - PAST (Grammar)            -->
+            <!-- ============================================== -->
+
+            <!-- PÁGINA 11: GRAMMAR I (Was / Were) -->
+            <section class="slide p-4 md:p-8">
+                <div class="page-content">
+                    <h2 class="font-bold font-ui tracking-widest mb-2 uppercase text-xs text-[var(--secondary)]">Grammar Focus 1</h2>
+                    <h1 class="text-4xl md:text-6xl font-black font-head uppercase tracking-tighter mb-8 text-[var(--accent)]">Past of "To Be"</h1>
+                    
+                    <div class="theme-panel p-10 max-w-4xl w-full text-left mx-auto">
+                        <p class="text-xl font-bold mb-6 text-white">To describe people, places, and feelings in the past, we use <strong class="text-[var(--accent)]">Was</strong> and <strong class="text-[var(--secondary)]">Were</strong>.</p>
+                        
+                        <div class="bg-[var(--bg-top)] p-6 rounded-lg mb-6 text-center text-xl font-bold border border-[var(--border-color)] text-white grid grid-cols-2 gap-4">
+                            <div>
+                                <span class="text-[var(--accent)] text-3xl font-black block mb-2">WAS</span>
+                                <span class="text-sm text-gray-400 font-ui tracking-widest uppercase">I / He / She / It</span>
+                            </div>
+                            <div>
+                                <span class="text-[var(--secondary)] text-3xl font-black block mb-2">WERE</span>
+                                <span class="text-sm text-gray-400 font-ui tracking-widest uppercase">You / We / They</span>
+                            </div>
+                        </div>
+
+                        <ul class="space-y-4 text-lg text-gray-300 font-bold mt-8">
+                            <li>"He <span class="text-[var(--accent)]">was</span> a baby."</li>
+                            <li>"I <span class="text-[var(--accent)]">was</span> in Smallville."</li>
+                            <li>"They <span class="text-[var(--secondary)]">were</span> happy in the city."</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- PÁGINA 12: HEAT VISION (Error Correction) -->
+            <section class="slide p-4 md:p-8">
+                <div class="page-content">
+                    <h2 class="font-bold font-ui tracking-widest mb-2 uppercase text-xs text-[var(--accent)]">Interactive Challenge</h2>
+                    <h1 class="text-4xl md:text-6xl font-black font-head uppercase tracking-tighter mb-8 text-white">Heat Vision</h1>
+                    <p class="text-lg text-[var(--text-muted)] mb-8 font-medium">Use your Heat Vision! Click the WRONG verb to fix the sentence.</p>
+
+                    <div class="theme-panel p-12 max-w-4xl w-full text-center mx-auto bg-black border-2 border-[var(--accent)] shadow-[0_0_30px_rgba(220,38,38,0.3)]">
+                        <p class="text-4xl font-bold text-gray-300 leading-loose">
+                            "His parents <span class="heat-target text-[var(--text-main)]" onclick="resolveHeat(this, true, 'were')">was</span> from a farm. They <span class="heat-target" onclick="resolveHeat(this, false)">were</span> very good people."
+                        </p>
+                    </div>
+                    
+                    <p id="heat-feedback" class="text-2xl font-bold text-[#10b981] mt-8 hidden animate-pulse font-head tracking-widest">Kryptonite Destroyed! "Parents" = They. We use WERE.</p>
+                </div>
+            </section>
+
+            <!-- ============================================== -->
+            <!-- ACT III: NEGATIVE PAST (Grammar 2)             -->
+            <!-- ============================================== -->
+
+            <!-- PÁGINA 13: GRAMMAR II (Wasn't / Weren't) -->
+            <section class="slide p-4 md:p-8">
+                <div class="page-content">
+                    <h2 class="font-bold font-ui tracking-widest mb-2 uppercase text-xs text-[var(--secondary)]">Grammar Focus 2</h2>
+                    <h1 class="text-4xl md:text-6xl font-black font-head uppercase tracking-tighter mb-8 text-[var(--accent)]">The Negative</h1>
+                    
+                    <div class="theme-panel p-10 max-w-4xl w-full text-left mx-auto border-l-4 border-l-[var(--secondary)]">
+                        <p class="text-xl font-bold mb-6 text-white">To say "NO" in the past, we add <strong class="text-red-500">NOT</strong>.</p>
+                        
+                        <ul class="space-y-6 text-xl text-gray-300 font-bold border-t border-[var(--border-color)] pt-6">
+                            <li>Was + Not &rarr; <span class="text-[var(--secondary)] text-3xl">Wasn't</span> <br><span class="text-sm font-normal italic text-gray-400">("He wasn't an ordinary boy.")</span></li>
+                            <li>Were + Not &rarr; <span class="text-[var(--secondary)] text-3xl">Weren't</span> <br><span class="text-sm font-normal italic text-gray-400">("They weren't sad.")</span></li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- PÁGINA 14: PHANTOM ZONE -->
+            <section class="slide p-4 md:p-8">
+                <div class="page-content">
+                    <h2 class="font-bold font-ui tracking-widest mb-2 uppercase text-xs text-[var(--secondary)]">Interactive Challenge</h2>
+                    <h1 class="text-4xl md:text-6xl font-black font-head uppercase tracking-tighter mb-8 text-white">Phantom Zone</h1>
+                    <p class="text-lg text-[var(--text-muted)] mb-8 font-medium">Send the verb to the Phantom Zone to make it Negative! Click the button.</p>
+
+                    <div class="flex flex-col md:flex-row items-center justify-center gap-10 max-w-4xl mx-auto w-full">
+                        <div class="flex flex-col gap-4 w-full md:w-1/3">
+                            <button class="theme-btn py-4 w-full" onclick="sendToPhantom('was', 'Wasn\'t')">Was</button>
+                            <button class="theme-btn py-4 w-full" onclick="sendToPhantom('were', 'Weren\'t')">Were</button>
+                        </div>
+                        <div class="phantom-gate w-full md:w-1/3 text-white" id="phantom-box">
+                            ?
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- PÁGINA 15: SPEAKING (YOUR PAST) -->
+            <section class="slide p-4 md:p-8">
+                <div class="page-content">
+                    <h2 class="font-bold font-ui tracking-widest mb-2 uppercase text-xs text-[var(--secondary)]">Speaking Module</h2>
+                    <h1 class="text-4xl md:text-6xl font-black font-head uppercase tracking-tighter mb-10 text-[var(--accent)]">Your Day</h1>
+                    
+                    <div class="theme-panel p-12 max-w-4xl w-full text-center mx-auto">
+                        <p class="text-2xl font-bold mb-8 text-white leading-relaxed">
+                            "Let's practice Was and Were."
+                        </p>
+                        <div class="bg-[var(--bg-top)] border border-[var(--border-color)] rounded-lg p-6 mx-auto max-w-2xl text-left space-y-6">
+                            <div>
+                                <p class="font-bold text-[var(--secondary)] font-ui text-sm mb-1 tracking-widest uppercase">🗣️ Prompt 1:</p>
+                                <p class="italic text-lg text-[var(--text-main)] font-bold">"Where <span class="underline text-red-500">were</span> you yesterday at 8 PM?"<br>(I was at...)</p>
+                            </div>
+                            <div>
+                                <p class="font-bold text-[var(--secondary)] font-ui text-sm mb-1 tracking-widest uppercase">🗣️ Prompt 2:</p>
+                                <p class="italic text-lg text-[var(--text-main)] font-bold">"<span class="underline text-red-500">Were</span> you tired this morning?"<br>(Yes, I was. / No, I wasn't.)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============================================== -->
+            <!-- ACT IV: ASKING QUESTIONS (Grammar 3)           -->
+            <!-- ============================================== -->
+
+            <!-- PÁGINA 16: GRAMMAR III (Questions) -->
+            <section class="slide p-4 md:p-8">
+                <div class="page-content">
+                    <h2 class="font-bold font-ui tracking-widest mb-2 uppercase text-xs text-[var(--secondary)]">Grammar Focus 3</h2>
+                    <h1 class="text-4xl md:text-6xl font-black font-head uppercase tracking-tighter mb-8 text-[var(--accent)]">Asking Questions</h1>
+                    
+                    <div class="theme-panel p-10 max-w-4xl w-full text-left mx-auto">
+                        <p class="text-xl font-bold mb-6 text-white">To ask a question, <strong class="text-[var(--accent)] text-3xl">Was</strong> and <strong class="text-[var(--secondary)] text-3xl">Were</strong> move to the front!</p>
+                        
+                        <div class="bg-black p-6 rounded-lg mb-6 text-center text-lg font-bold border border-[var(--border-color)] text-white">
+                            <span class="text-[var(--accent)]">Was / Were</span> + <span class="text-[var(--secondary)]">Person</span> + <span class="text-[#10b981]">Place/Feeling</span> + ?
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4 mt-6 text-center">
+                            <div class="bg-[var(--bg-top)] p-4 rounded text-black font-bold">He <span class="text-green-600">was</span> an alien.</div>
+                            <div class="bg-[var(--bg-top)] p-4 rounded text-black font-bold"><span class="text-red-600">Was</span> he an alien?</div>
+                            <div class="bg-[var(--bg-top)] p-4 rounded text-black font-bold">They <span class="text-green-600">were</span> farmers.</div>
+                            <div class="bg-[var(--bg-top)] p-4 rounded text-black font-bold"><span class="text-red-600">Were</span> they farmers?</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- PÁGINA 17: SENTENCE BUILDER 1 (Negative) -->
+            <section class="slide p-4 md:p-8">
+                <div class="page-content">
+                    <h2 class="font-bold font-ui tracking-widest mb-2 uppercase text-xs text-[var(--secondary)]">Interactive Challenge</h2>
+                    <h1 class="text-4xl md:text-6xl font-black font-head uppercase tracking-tighter mb-8 text-[var(--accent)]">Sentence Builder</h1>
+                    <p class="text-lg text-[var(--text-muted)] mb-8 font-medium">Click the words in the correct order to make a Negative sentence.</p>
+
+                    <div class="theme-panel p-10 max-w-4xl mx-auto w-full bg-black">
+                        <div id="dropzone" class="min-h-[80px] border-2 border-dashed border-gray-600 rounded-lg mb-8 p-4 flex flex-wrap gap-2 items-center justify-center"></div>
+                        
+                        <div id="wordbank" class="flex flex-wrap justify-center gap-4 mb-8">
+                            <button class="bg-white text-black font-bold py-2 px-6 rounded hover:bg-gray-200" onclick="moveBuilderWord(this)">He</button>
+                            <button class="bg-white text-black font-bold py-2 px-6 rounded hover:bg-gray-200" onclick="moveBuilderWord(this)">an ordinary boy</button>
+                            <button class="bg-white text-black font-bold py-2 px-6 rounded hover:bg-gray-200" onclick="moveBuilderWord(this)">wasn't</button>
+                        </div>
+
+                        <button onclick="checkBuilder()" class="theme-btn px-8 py-3 w-full">Check Answer</button>
+                        <p id="builder-feedback" class="mt-6 font-bold text-2xl hidden"></p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- PÁGINA 18: QUESTION BUILDER -->
+            <section class="slide p-4 md:p-8">
+                <div class="page-content">
+                    <h2 class="font-bold font-ui tracking-widest mb-2 uppercase text-xs text-[var(--secondary)]">Interactive Challenge</h2>
+                    <h1 class="text-4xl md:text-6xl font-black font-head uppercase tracking-tighter mb-8 text-[var(--accent)]">The Interview</h1>
+                    <p class="text-lg text-[var(--text-muted)] mb-8 font-medium">Help Lois Lane ask a question. Click the words in the correct order.</p>
+
+                    <div class="theme-panel p-10 max-w-4xl mx-auto w-full bg-black">
+                        <div id="dropzone-q" class="min-h-[80px] border-2 border-dashed border-gray-600 rounded-lg mb-8 p-4 flex flex-wrap gap-2 items-center justify-center"></div>
+                        
+                        <div id="wordbank-q" class="flex flex-wrap justify-center gap-4 mb-8">
+                            <button class="bg-white text-black font-bold py-2 px-6 rounded hover:bg-gray-200" onclick="moveQuestionWord(this)">you</button>
+                            <button class="bg-white text-black font-bold py-2 px-6 rounded hover:bg-gray-200" onclick="moveQuestionWord(this)">on the farm</button>
+                            <button class="bg-white text-black font-bold py-2 px-6 rounded hover:bg-gray-200" onclick="moveQuestionWord(this)">?</button>
+                            <button class="bg-white text-black font-bold py-2 px-6 rounded hover:bg-gray-200" onclick="moveQuestionWord(this)">Were</button>
+                        </div>
+
+                        <button onclick="checkQuestionBuilder()" class="theme-btn px-8 py-3 w-full">Ask Question</button>
+                        <p id="q-builder-feedback" class="mt-6 font-bold text-2xl hidden"></p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- PÁGINA 19: SPEAKING (MORE PRACTICE) -->
+            <section class="slide p-4 md:p-8">
+                <div class="page-content">
+                    <h2 class="font-bold font-ui tracking-widest mb-2 uppercase text-xs text-[var(--secondary)]">Speaking Module</h2>
+                    <h1 class="text-4xl md:text-6xl font-black font-head uppercase tracking-tighter mb-10 text-[var(--accent)]">Ask the Teacher</h1>
+                    
+                    <div class="theme-panel p-12 max-w-4xl w-full text-center mx-auto">
+                        <p class="text-2xl font-bold mb-8 text-white leading-relaxed">
+                            Now it is your turn. Ask your teacher a question using "Were you...?"
+                        </p>
+                        <div class="bg-[var(--bg-top)] border border-[var(--border-color)] rounded-lg p-6 mx-auto max-w-2xl text-left space-y-4">
+                            <p class="italic text-lg text-[var(--text-main)] font-bold">"Teacher, <span class="text-red-500">were</span> you tired yesterday?"</p>
+                            <p class="italic text-lg text-[var(--text-main)] font-bold">"Teacher, <span class="text-red-500">were</span> you at home on Saturday?"</p>
+                            <p class="italic text-lg text-[var(--text-main)] font-bold">"Teacher, <span class="text-red-500">were</span> you a quiet baby?"</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- PÁGINA 20: READING COMPREHENSION -->
+            <section class="slide p-4 md:p-8">
+                <div class="page-content">
+                    <h2 class="font-bold font-ui tracking-widest mb-2 uppercase text-xs text-[var(--secondary)]">Reading</h2>
+                    <h1 class="text-4xl md:text-6xl font-black font-head uppercase tracking-tighter mb-10 text-white">The Secret</h1>
+                    
+                    <div class="theme-panel p-10 max-w-4xl mx-auto w-full text-left">
+                        <p class="text-xl md:text-2xl font-bold mb-6 text-gray-300 leading-relaxed border-b border-gray-600 pb-6">
+                            "His name was Kal-El. His parents were from Krypton. But Krypton was destroyed. So, he was sent to Earth. The farm was his first home."
+                        </p>
+                        
+                        <p class="text-lg text-[var(--secondary)] font-bold uppercase tracking-widest font-ui mb-2">Read the text and answer:</p>
+                        <p class="text-xl font-bold text-white">What was his real name?</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- PÁGINA 21: ROLEPLAY (SIMPLE DIALOGUE) -->
+            <section class="slide p-4 md:p-8">
+                <div class="page-content">
+                    <h2 class="font-bold font-ui tracking-widest mb-2 uppercase text-xs text-[var(--secondary)]">Interactive Speaking</h2>
+                    <h1 class="text-4xl md:text-6xl font-black font-head uppercase tracking-tighter mb-8 text-[var(--accent)]">The Interview</h1>
+                    
+                    <div class="flex flex-col md:flex-row gap-6 w-full max-w-5xl mx-auto">
+                        <div class="flex-1 theme-panel p-8 text-center bg-blue-900/20 border-blue-700/50">
+                            <h3 class="text-2xl font-black mb-2 uppercase text-[var(--secondary)]">Teacher</h3>
+                            <p class="text-sm tracking-widest mb-6 font-bold uppercase text-blue-400 font-ui">Lois (The Journalist)</p>
+                            <p class="text-xl font-bold text-white mb-4">"Who are you? Where were you born?"</p>
+                        </div>
+                        <div class="flex-1 theme-panel p-8 text-center bg-red-900/20 border-red-900/50">
+                            <h3 class="text-2xl font-black mb-2 uppercase text-[var(--accent)]">Student</h3>
+                            <p class="text-sm tracking-widest mb-6 font-bold uppercase text-red-500 font-ui">Clark</p>
+                            <p class="text-xl font-bold text-white mb-4">"I am Superman. I was born on Krypton. But I grew up on a farm."</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- PÁGINA 22: THE BIG DEBATE -->
+            <section class="slide p-4 md:p-8">
+                <div class="page-content">
+                    <h2 class="font-bold font-ui tracking-widest mb-2 uppercase text-xs text-[var(--secondary)]">Deep Discussion</h2>
+                    <h1 class="text-4xl md:text-6xl font-black font-head uppercase tracking-tighter mb-10 text-white">City vs. Farm</h1>
+                    
+                    <div class="theme-panel p-12 max-w-4xl mx-auto w-full text-center">
+                        <p class="text-2xl font-bold mb-10 text-white leading-relaxed">Where is the best place to live?</p>
+                        
+                        <div class="flex justify-between text-sm font-bold uppercase tracking-widest text-[var(--secondary)] mb-4 font-ui px-4">
+                            <span>Big City (Metropolis)</span>
+                            <span>Quiet Farm (Smallville)</span>
+                        </div>
+                        <input type="range" min="0" max="100" value="50" class="w-full accent-[var(--accent)] h-2 bg-gray-800 rounded-lg appearance-none cursor-pointer mb-10">
+                        
+                        <p class="text-xl font-bold text-gray-400">Why?</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- PÁGINA 23: SPEAKING ROULETTE -->
+            <section class="slide p-4 md:p-8">
+                <div class="page-content items-center text-center">
+                    <h2 class="font-bold font-ui tracking-widest mb-2 uppercase text-xs text-[var(--secondary)]">Final Challenge</h2>
+                    <h1 class="text-5xl md:text-7xl font-black font-head uppercase tracking-tighter mb-10 text-white">The Roulette</h1>
+                    
+                    <div class="theme-panel p-12 max-w-4xl mx-auto w-full text-center border-t-4 border-[var(--accent)] bg-black/60">
+                        <p class="text-xl font-bold mb-8 text-gray-300">Spin the roulette to get a question with Was or Were.</p>
+                        
+                        <div class="min-h-[160px] flex items-center justify-center bg-black border-2 border-[var(--border-color)] rounded-xl p-8 mb-8 shadow-inner overflow-hidden">
+                            <p id="roulette-display" class="text-3xl md:text-4xl font-black text-gray-500 italic transition-colors leading-relaxed">Press SPIN...</p>
+                        </div>
+
+                        <button id="roulette-btn" onclick="spinRoulette()" class="theme-btn px-12 py-5 text-2xl w-full max-w-md mx-auto flex justify-center items-center gap-3">
+                            <span class="text-3xl">🎲</span> SPIN
+                        </button>
+                        <p class="text-sm font-bold text-[var(--secondary)] uppercase tracking-widest mt-6 font-ui bg-[var(--panel-bg)] inline-block px-4 py-2 rounded shadow-md border border-[var(--border-color)]" id="roulette-counter">6 Questions Left</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- PÁGINA 24: RATING & REBOOT -->
+            <section class="slide p-4 md:p-8">
+                <div class="page-content items-center text-center">
+                    <h2 class="font-bold font-ui tracking-widest mb-2 uppercase text-xs text-[var(--secondary)]">Session Complete</h2>
+                    <h1 class="text-5xl md:text-7xl font-black font-head uppercase tracking-tighter mb-10 text-white">The End</h1>
+                    
+                    <div class="theme-panel p-8 text-center flex flex-col justify-center border border-[var(--border-color)] bg-black max-w-2xl mx-auto w-full mb-12">
+                        <p class="mb-6 text-lg font-bold text-gray-400 uppercase tracking-widest font-ui">Rate this Origin Story:</p>
+                        <div class="flex justify-center gap-3 md:gap-6 mb-8">
+                            <button onclick="rate(1)" class="shield-rating text-5xl md:text-6xl grayscale opacity-30 hover:scale-110 transition-transform filter drop-shadow-md">🛡️</button>
+                            <button onclick="rate(2)" class="shield-rating text-5xl md:text-6xl grayscale opacity-30 hover:scale-110 transition-transform filter drop-shadow-md">🛡️</button>
+                            <button onclick="rate(3)" class="shield-rating text-5xl md:text-6xl grayscale opacity-30 hover:scale-110 transition-transform filter drop-shadow-md">🛡️</button>
+                            <button onclick="rate(4)" class="shield-rating text-5xl md:text-6xl grayscale opacity-30 hover:scale-110 transition-transform filter drop-shadow-md">🛡️</button>
+                            <button onclick="rate(5)" class="shield-rating text-5xl md:text-6xl grayscale opacity-30 hover:scale-110 transition-transform filter drop-shadow-md">🛡️</button>
+                        </div>
+                        <div id="rat-hub" class="hidden p-3 bg-gray-900 rounded-lg font-bold text-sm text-center uppercase tracking-widest text-[var(--secondary)] w-max mx-auto border border-gray-800">> RATED <span id="star-c" class="text-white mx-2 font-black text-2xl"></span> SHIELDS.</div>
+                    </div>
+
+                    <button onclick="window.location.reload();" class="theme-btn px-12 py-5 text-xl">
+                        Restart Lesson
+                    </button>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- BOTTOM BAR -->
+    <footer class="fixed bottom-0 left-0 w-full h-16 md:h-20 bg-[var(--panel-bg)]/90 backdrop-blur-xl border-t border-[var(--border-color)] z-40 flex items-center justify-between px-4 md:px-8 transition-all duration-500">
+        <div class="hidden md:flex flex-1 items-center gap-2">
+            <span class="font-black text-xl tracking-widest uppercase text-[var(--accent)] font-head">WOLFLIX</span>
+            <span class="text-xs uppercase tracking-widest border-l border-[var(--border-color)] pl-2 opacity-70 font-bold">Masterclass</span>
+        </div>
+
+        <div class="flex items-center justify-center flex-1 gap-4 md:gap-6">
+            <button onclick="prevSlide()" class="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center border border-[var(--border-color)] rounded-full hover:bg-[var(--accent)] hover:text-white transition-colors text-[var(--text-main)] shadow-sm" title="Previous Phase">
+                <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 19l-7-7 7-7"/></svg>
+            </button>
+            <div class="w-32 md:w-40 bg-[var(--bg-bot)] h-2 rounded-full overflow-hidden border border-[var(--border-color)] shadow-inner">
+                <div id="lcd-prog" class="h-full bg-[var(--secondary)] w-0 transition-all duration-300"></div>
+            </div>
+            <button onclick="nextSlide()" class="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center border border-[var(--border-color)] rounded-full hover:bg-[var(--accent)] hover:text-white transition-colors text-[var(--text-main)] shadow-sm" title="Next Phase">
+                <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5l7 7-7 7"/></svg>
+            </button>
+        </div>
+
+        <div class="flex-1 text-right font-bold tracking-widest uppercase text-sm md:text-lg font-head text-[var(--text-muted)]">
+            Page <span id="page-num" class="text-[var(--accent)] ml-1 font-black">01</span> <span class="opacity-50 text-xs font-ui">/ 24</span>
+        </div>
+    </footer>
+
+    <!-- SLIDE-OUT NOTEPAD -->
+    <aside id="notepad-panel" class="fixed top-0 right-0 w-full max-w-md h-full bg-[var(--bg-top)] border-l border-[var(--border-color)] z-50 translate-x-full flex flex-col shadow-[-10px_0px_50px_rgba(0,0,0,0.9)] transition-transform duration-500 text-[var(--text-main)]">
+        <div class="p-6 border-b border-[var(--border-color)] bg-[var(--panel-bg)] flex justify-between items-center shadow-md">
+            <h2 class="font-black uppercase tracking-widest text-lg flex items-center gap-2 text-[var(--accent)] font-head">
+                <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                Teacher's Notes
+            </h2>
+            <button onclick="toggleNotepad()" class="text-[var(--text-muted)] hover:text-black font-black text-3xl px-2 transition-colors">✕</button>
+        </div>
+        <textarea class="flex-1 w-full bg-transparent p-8 font-base font-medium text-xl leading-relaxed outline-none resize-none placeholder:text-[var(--text-muted)]" placeholder="Type student feedback here..."></textarea>
+    </aside>
+
+    <script>
+        // --- 1. Pagination Logic ---
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+        let isHacked = false;
+
+        function updateUI() {
+            document.getElementById('page-num').innerText = (currentSlide + 1).toString().padStart(2, '0');
+            const prog = document.getElementById('lcd-prog');
+            if(totalSlides > 1) prog.style.width = `${(currentSlide / (totalSlides - 1)) * 100}%`;
+            
+            const iframes = document.querySelectorAll('iframe');
+            iframes.forEach(iframe => { const src = iframe.src; iframe.src = src; });
+            const mainArea = document.querySelector('main');
+            if(mainArea) mainArea.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function goToSlide(i) {
+            if (i < 0 || i >= totalSlides) return;
+            slides.forEach(s => s.classList.remove('active'));
+            currentSlide = i;
+            slides[currentSlide].classList.add('active');
+            updateUI();
+        }
+
+        function nextSlide() { goToSlide(currentSlide + 1); }
+        function prevSlide() { goToSlide(currentSlide - 1); }
+
+        window.nextSlide = nextSlide;
+        window.prevSlide = prevSlide;
+        window.goToSlide = goToSlide;
+
+        document.addEventListener('keydown', (e) => {
+            if(e.key === 'ArrowRight') nextSlide();
+            if(e.key === 'ArrowLeft') prevSlide();
+        });
+
+        // --- 2. Fullscreen & Notepad ---
+        function toggleFullscreen() {
+            const doc = window.document;
+            const docEl = doc.documentElement;
+            const req = docEl.requestFullscreen || docEl.webkitRequestFullScreen || docEl.msRequestFullscreen;
+            const exit = doc.exitFullscreen || doc.webkitExitFullscreen || doc.msExitFullscreen;
+            try {
+                if (!doc.fullscreenElement) {
+                    const promise = req ? req.call(docEl) : null;
+                    if (promise && promise.catch) promise.catch(err => console.warn(err));
+                } else {
+                    const promise = exit ? exit.call(doc) : null;
+                    if (promise && promise.catch) promise.catch(err => console.warn(err));
+                }
+            } catch (err) { console.warn(err); }
+        }
+
+        function toggleNotepad() { document.getElementById('notepad-panel').classList.toggle('translate-x-full'); }
+
+        // --- 3. Praise System ---
+        function triggerPraise(main, icon) {
+            const popup = document.getElementById('praise-popup');
+            const textContainer = document.getElementById('praise-text');
+            textContainer.innerHTML = `${main} <span class="ml-3">${icon}</span>`;
+            popup.classList.remove('hidden');
+            popup.classList.remove('toast-anim');
+            void popup.offsetWidth;
+            popup.classList.add('toast-anim');
+            setTimeout(() => { popup.classList.remove('toast-anim'); popup.classList.add('hidden'); }, 2500);
+        }
+
+        // --- 4. Vocabulary Match Logic ---
+        let matchState = {
+            1: { selectedWord: null, count: 0 },
+            2: { selectedWord: null, count: 0 }
+        };
+
+        function selectMatch(btn, type, group) {
+            if(btn.classList.contains('matched')) return;
+
+            let state = matchState[group];
+
+            if(type === 'word') {
+                document.querySelectorAll(`.word-btn-${group}`).forEach(b => {
+                    if(!b.classList.contains('matched')) b.classList.remove('selected');
+                });
+                btn.classList.add('selected');
+                state.selectedWord = btn;
+            } else if (type === 'def' && state.selectedWord) {
+                if(btn.dataset.match === state.selectedWord.dataset.match) {
+                    // Correct
+                    btn.classList.add('matched');
+                    state.selectedWord.classList.add('matched');
+                    state.selectedWord.classList.remove('selected');
+                    state.selectedWord = null;
+                    state.count++;
+
+                    if(state.count === 4) {
+                        document.getElementById(`followup-${group}`).classList.remove('hidden');
+                        triggerPraise('KNOWLEDGE UNLOCKED!', '🧠');
+                    }
+                } else {
+                    // Wrong
+                    btn.classList.add('error-shake', 'border-red-500');
+                    setTimeout(() => btn.classList.remove('error-shake', 'border-red-500'), 400);
+                }
+            }
+        }
+
+        // --- 5. Sonic Boom (Transition to Metropolis) ---
+        function triggerSonicBoom() {
+            if (isHacked) { nextSlide(); return; }
+            const btn = document.getElementById('boom-btn');
+            if (btn) btn.disabled = true;
+            const overlay = document.getElementById('boom-layer');
+            overlay.classList.add('boom-active');
+            
+            setTimeout(() => {
+                document.body.classList.add('theme-metropolis');
+                isHacked = true;
+            }, 500);
+
+            setTimeout(() => {
+                nextSlide(); 
+                overlay.classList.remove('boom-active');
+            }, 1500);
+        }
+
+        // --- 6. Heat Vision ---
+        function resolveHeat(el, isError, correctText) {
+            if (el.classList.contains('heat-resolved')) return;
+            const fb = document.getElementById('heat-feedback');
+            if(isError) {
+                el.innerText = correctText;
+                el.classList.add('heat-resolved');
+                fb.classList.remove('hidden');
+                triggerPraise('FIXED!', '🔥');
+            } else {
+                el.classList.add('text-red-500');
+                setTimeout(() => el.classList.remove('text-red-500'), 500);
+            }
+        }
+
+        // --- 7. Phantom Zone ---
+        function sendToPhantom(word, negWord) {
+            const box = document.getElementById('phantom-box');
+            box.classList.add('active');
+            box.innerText = negWord;
+            setTimeout(() => box.classList.remove('active'), 500);
+        }
+
+        // --- 8. Sentence Builder ---
+        function moveBuilderWord(btn) {
+            const drop = document.getElementById('dropzone');
+            const bank = document.getElementById('wordbank');
+            if(btn.parentElement.id === 'wordbank') drop.appendChild(btn);
+            else bank.appendChild(btn);
+        }
+
+        function checkBuilder() {
+            const drop = document.getElementById('dropzone');
+            const words = Array.from(drop.children).map(c => c.innerText).join(' ');
+            const fb = document.getElementById('builder-feedback');
+            fb.classList.remove('hidden');
+            if(words === "He wasn't an ordinary boy") {
+                fb.innerText = "> CORRECT!"; fb.className = "mt-6 font-bold text-2xl text-green-500";
+                triggerPraise('CORRECT!', '✅');
+            } else {
+                fb.innerText = "> INCORRECT. Try again."; fb.className = "mt-6 font-bold text-2xl text-red-500";
+            }
+        }
+
+        // --- Question Builder Logic ---
+        function moveQuestionWord(btn) {
+            const drop = document.getElementById('dropzone-q');
+            const bank = document.getElementById('wordbank-q');
+            if(btn.parentElement.id === 'wordbank-q') drop.appendChild(btn);
+            else bank.appendChild(btn);
+        }
+
+        function checkQuestionBuilder() {
+            const drop = document.getElementById('dropzone-q');
+            const words = Array.from(drop.children).map(c => c.innerText).join(' ');
+            const fb = document.getElementById('q-builder-feedback');
+            fb.classList.remove('hidden');
+            if(words === "Were you on the farm ?") {
+                fb.innerText = "> EXCELLENT QUESTION!"; fb.className = "mt-6 font-bold text-2xl text-green-500";
+                triggerPraise('GREAT REPORTER!', '🎤');
+            } else {
+                fb.innerText = "> INCORRECT. Remember: Were + You."; fb.className = "mt-6 font-bold text-2xl text-red-500";
+            }
+        }
+
+        // --- Speaking Roulette Logic (A1+ Version) ---
+        let rouletteQuestions = [
+            "Were you at home yesterday?",
+            "Where were you at 8 PM yesterday?",
+            "Were you a quiet baby?",
+            "Was your weekend good or bad?",
+            "Were you tired this morning?",
+            "Was it hot or cold yesterday?"
+        ];
+
+        function spinRoulette() {
+            const display = document.getElementById('roulette-display');
+            const btn = document.getElementById('roulette-btn');
+            const counter = document.getElementById('roulette-counter');
+            
+            if (rouletteQuestions.length === 0) {
+                display.innerText = "All questions answered! Great job.";
+                display.classList.remove('text-white', 'text-gray-500');
+                display.classList.add('text-[#10b981]');
+                btn.disabled = true;
+                btn.innerText = "COMPLETED";
+                return;
+            }
+
+            btn.disabled = true;
+            display.classList.remove('text-[#10b981]', 'text-white');
+            display.classList.add('text-gray-500');
+
+            // Shuffle animation
+            let shuffleCount = 0;
+            const interval = setInterval(() => {
+                display.innerText = rouletteQuestions[Math.floor(Math.random() * rouletteQuestions.length)];
+                shuffleCount++;
+                if (shuffleCount > 15) {
+                    clearInterval(interval);
+                    // Final Selection
+                    const randomIndex = Math.floor(Math.random() * rouletteQuestions.length);
+                    display.innerText = rouletteQuestions[randomIndex];
+                    rouletteQuestions.splice(randomIndex, 1); // Remove from array
+                    
+                    // UI Update
+                    display.classList.add('text-white');
+                    display.classList.remove('text-gray-500');
+                    counter.innerText = `${rouletteQuestions.length} Questions Left`;
+                    btn.disabled = false;
+                    triggerPraise('GREAT QUESTION!', '🎲');
+                }
+            }, 60);
+        }
+
+        // --- 9. Rating ---
+        function rate(n) {
+            const drops = document.querySelectorAll('.shield-rating');
+            drops.forEach((d, i) => {
+                d.classList.toggle('grayscale', i >= n);
+                d.classList.toggle('opacity-30', i >= n);
+                if(i < n) d.style.filter = "drop-shadow(0 0 15px rgba(220,38,38,0.8))";
+                else d.style.filter = "none";
+            });
+            document.getElementById('rat-hub').classList.remove('hidden');
+            document.getElementById('star-c').innerText = n;
+        }
+
+        updateUI();
+    </script>
+</body>
+</html>
